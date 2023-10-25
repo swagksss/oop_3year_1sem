@@ -1,25 +1,25 @@
 package org.example;
 
 public class CustomCyclicBarrier {
-    private final int threadsCount;   // Кількість потоків, які повинні досягнути бар'єру
-    private int awaitCount;           // Лічильник потоків, які чекають на бар'єр
-    private final Runnable barrierAction;  // Операція, яку необхідно виконати після досягнення бар'єру
+    private final int threadsCount;   // The number of threads that should reach the barrier
+    private int awaitCount;           // Counter for threads waiting at the barrier
+    private final Runnable barrierAction;  // The operation to be executed after reaching the barrier
 
     public CustomCyclicBarrier(int threadsCount, Runnable barrierAction) {
-        this.threadsCount = threadsCount;     // Ініціалізація кількості потоків
-        this.awaitCount = threadsCount;        // Початкове значення лічильника рівне кількості потоків
-        this.barrierAction = barrierAction;    // Ініціалізація операції бар'єру
+        this.threadsCount = threadsCount;     // Initialize the number of threads
+        this.awaitCount = threadsCount;        // Set the initial count equal to the number of threads
+        this.barrierAction = barrierAction;    // Initialize the barrier operation
     }
 
     public synchronized void await() throws InterruptedException {
-        awaitCount--;  // Зменшуємо лічильник потоків, які ще не досягли бар'єру
+        awaitCount--;  // Decrement the count of threads that haven't reached the barrier yet
 
         if (awaitCount > 0) {
-            wait();  // Якщо ще не всі потоки досягли бар'єру, поточний потік очікує
+            wait();  // If not all threads have reached the barrier, the current thread waits
         } else {
-            awaitCount = threadsCount;  // Якщо всі потоки досягли бар'єру, скидаємо лічильник ініціалізуємо його знову
-            barrierAction.run();  // Виконуємо операцію бар'єру, передбачену в Runnable
-            notifyAll();  // Повідомляємо всі потоки, що вони можуть продовжити виконання
+            awaitCount = threadsCount;  // If all threads have reached the barrier, reset the counter
+            barrierAction.run();  // Execute the barrier operation specified in the Runnable
+            notifyAll();  // Notify all threads that they can continue execution
         }
     }
 }
